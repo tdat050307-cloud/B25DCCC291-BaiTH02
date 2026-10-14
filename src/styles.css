@@ -1,0 +1,314 @@
+/* ===== Biến màu: đổi ở đây là đổi cả giao diện ===== */
+:root {
+  --green: #0b8a43;
+  --green-dark: #086b34;
+  --green-soft: #eaf6ee;
+  --bg: #f2f5f4;
+  --card: #ffffff;
+  --border: #dfe6e2;
+  --text: #1f2a24;
+  --muted: #6b7a72;
+  --error: #c0392b;
+  --radius: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.app {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* ===== Thanh tiêu đề màu xanh ===== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 14px 20px;
+  background: var(--green);
+  color: #fff;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 6px rgba(11, 138, 67, 0.25);
+}
+.header h1 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+/* ===== Bố cục: mặc định xếp dọc, từ 768px chia 2 cột ===== */
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+@media (min-width: 768px) {
+  .layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    align-items: start;
+  }
+}
+
+/* ===== Danh sách thành phố ===== */
+.city-list {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.city-list h2 {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  color: var(--green-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.city-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+/* Màn nhỏ: các thành phố xếp thành lưới 2 cột cho đỡ dài */
+@media (max-width: 767px) {
+  .city-list ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.city-btn {
+  width: 100%;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    transform 0.15s;
+}
+.city-btn:hover {
+  border-color: var(--green);
+  background: var(--green-soft);
+}
+/* Thành phố đang chọn: viền xanh + nền xanh nhạt + chữ đậm */
+.city-btn.active {
+  border: 2px solid var(--green);
+  background: var(--green-soft);
+  color: var(--green-dark);
+  font-weight: 700;
+  padding: 9px 13px; /* trừ 1px vì viền dày hơn, tránh nút bị nhảy kích thước */
+}
+.city-btn:focus-visible,
+.unit-toggle button:focus-visible,
+.message button:focus-visible {
+  outline: 3px solid rgba(11, 138, 67, 0.4);
+  outline-offset: 2px;
+}
+
+/* ===== Khu vực nội dung ===== */
+.content {
+  display: grid;
+  gap: 20px;
+}
+
+.card,
+.message {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.card h2 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+}
+
+/* ===== Thông báo: chưa chọn / đang tải / lỗi ===== */
+.message {
+  text-align: center;
+  color: var(--muted);
+  padding: 40px 20px;
+}
+.message p {
+  margin: 0 0 12px;
+}
+.message.error {
+  color: var(--error);
+  border-color: #f0c9c4;
+  background: #fdf3f1;
+}
+.message button {
+  padding: 9px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--green);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.message button:hover {
+  background: var(--green-dark);
+}
+
+/* ===== Nút đổi °C / °F (nằm trên nền xanh của header) ===== */
+.unit-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 3px;
+}
+.unit-toggle button {
+  padding: 6px 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.unit-toggle button.active {
+  background: #fff;
+  color: var(--green-dark);
+}
+
+/* ===== Thời tiết hiện tại ===== */
+.current {
+  text-align: center;
+}
+.current h2 {
+  font-size: 1.3rem;
+  color: var(--green-dark);
+}
+.current-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin: 8px 0 16px;
+}
+.big-icon {
+  font-size: 4.5rem;
+  line-height: 1;
+}
+.current-main > div {
+  text-align: left;
+}
+.temp {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.desc {
+  font-size: 1.05rem;
+  color: var(--muted);
+}
+
+/* 3 ô thông tin: độ ẩm, gió, cập nhật */
+.details {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  text-align: left;
+}
+.details li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--green-soft);
+  border-radius: 8px;
+  color: var(--muted);
+}
+.details strong {
+  color: var(--text);
+}
+
+@media (min-width: 768px) {
+  .details {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .details li {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2px;
+  }
+}
+
+/* ===== Dự báo 7 ngày ===== */
+.forecast ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.day {
+  display: grid;
+  grid-template-columns: 64px 56px 44px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 6px;
+  border-bottom: 1px solid var(--border);
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+.day:last-child {
+  border-bottom: none;
+}
+.day:hover {
+  background: var(--green-soft);
+}
+.day-name {
+  font-weight: 700;
+}
+.day-date {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.day-icon {
+  font-size: 1.6rem;
+  text-align: center;
+}
+.day-temp {
+  text-align: right;
+}
+.day-temp strong {
+  color: var(--text);
+}
+.low {
+  color: var(--muted);
+}
