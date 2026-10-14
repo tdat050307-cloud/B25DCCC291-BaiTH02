@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CITIES } from "./data/cities.js";
-import { useWeather } from "./hooks/useWeather.js";
+import { fetchWeather } from "./api/weatherApi.js";
 import CityList from "./components/CityList.jsx";
 import CurrentWeather from "./components/CurrentWeather.jsx";
 import Forecast from "./components/Forecast.jsx";
@@ -9,9 +9,28 @@ import UnitToggle from "./components/UnitToggle.jsx";
 export default function App() {
   const [selectedId, setSelectedId] = useState(null); // null = chưa chọn thành phố
   const [unit, setUnit] = useState("C");
+  const [status, setStatus] = useState("idle"); // "idle" | "loading" | "error" | "success"
+  const [data, setData] = useState(null);
+  const [error, setError] = useState("");
 
-  const city = CITIES.find((c) => c.id === selectedId) ?? null;
-  const { status, data, error, retry } = useWeather(city);
+  // Hàm chạy khi bấm vào một thành phố (và khi bấm "Thử lại")
+  async function handleSelect(id) {
+    const city = CITIES.find((c) => c.id === id);
+
+    setSelectedId(id);
+    setStatus("loading");
+
+    try {
+      const result = await fetchWeather(city);
+      setData(result);
+      setStatus("success");
+    } catch (err) {
+      setError(err.message);
+      setStatus("error");
+    }
+  }
+
+  const city = CITIES.find((c) => c.id === selectedId);
 
   return (
     <div className="app">
@@ -24,7 +43,7 @@ export default function App() {
         <CityList
           cities={CITIES}
           selectedId={selectedId}
-          onSelect={setSelectedId}
+          onSelect={handleSelect}
         />
 
         <div className="content">
@@ -37,7 +56,7 @@ export default function App() {
           {status === "error" && (
             <div className="message error" role="alert">
               <p>Không tải được dữ liệu: {error}</p>
-              <button type="button" onClick={retry}>
+              <button type="button" onClick={() => handleSelect(selectedId)}>
                 Thử lại
               </button>
             </div>
